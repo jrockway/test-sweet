@@ -17,3 +17,9 @@ role Test::Sweet::Runnable with MooseX::Runnable {
 }
 
 1;
+
+__END__
+
+=head1 NAME
+
+Test::Sweet::Runnable - C<MooseX::Runnable> support for Test::Sweet classes

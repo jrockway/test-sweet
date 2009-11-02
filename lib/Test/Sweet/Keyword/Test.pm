@@ -48,3 +48,9 @@ sub parser {
 
 1;
 
+__END__
+
+=head1 NAME
+
+Test::Sweet::Keyword::Test - provides the C<test> keyword
+

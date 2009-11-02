@@ -59,6 +59,8 @@ role Test::Sweet::Meta::Class {
     }
 
     method get_all_tests {
+        return $self->local_tests unless $self->can('linearized_isa');
+
         my @ordering = reverse $self->linearized_isa;
         my @tests = map {
             eval {
@@ -71,3 +73,19 @@ role Test::Sweet::Meta::Class {
     }
 }
 
+__END__
+
+=head1 NAME
+
+Test::Sweet::Meta::Class - metaclass role that provides methods for keeping track of tests
+
+=head1 METHODS
+
+=head2 get_all_tests
+
+Returns the names of all test methods in this class' hierarchy.
+
+=head2 local_tests
+
+Returns the names of the test methods defined in this class.  Includes
+tests composed in via roles.

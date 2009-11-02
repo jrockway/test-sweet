@@ -10,7 +10,9 @@ requires 'Devel::Declare'  => '0.005011';
 requires 'MooseX::Declare' => '0.31';
 requires 'Moose'           => '0.92';
 requires 'List::MoreUtils';
+requires 'MooseX::Runnable';
 
 license 'Perl';
+repository 'http://github.com/jrockway/test-sweet';
 
 WriteAll;

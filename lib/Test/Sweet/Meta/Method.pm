@@ -46,11 +46,10 @@ role Test::Sweet::Meta::Method {
             return;
         });
     }
-
-    # ideally this would return true or false, but that will require
-    # some Test::Builder work.
-    method run_as_test {
-        $self->body_as_test->();
-        return;
-    }
 }
+
+__END__
+
+=head1 NAME
+
+Test::Sweet::Meta::Method - metamethod trait for running method as tests
