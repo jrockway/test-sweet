@@ -3,8 +3,9 @@ use MooseX::Declare;
 role Test::Sweet::Meta::Class {
     use MooseX::Types::Moose qw(Str ArrayRef ClassName Object);
     use Test::Sweet::Meta::Method;
+    use Moose::Meta::Class;
 
-    has 'tests' => (
+    has 'local_tests' => (
         traits     => ['Array'],
         is         => 'ro',
         isa        => ArrayRef[Str],
@@ -30,7 +31,7 @@ role Test::Sweet::Meta::Class {
     );
 
     method _build_test_metaclass {
-        return $self->create_anon_class(
+        return Moose::Meta::Class->create_anon_class(
             superclasses => [ $self->method_metaclass ],
             roles        => $self->test_metamethod_roles,
             cache        => 1,
@@ -44,8 +45,20 @@ role Test::Sweet::Meta::Class {
             name          => $name,
             package_name  => $self->name,
         );
+
         $self->add_method( $name, $body );
         $self->_add_test($name);
+    }
+
+    # ensure that we get the role's tests (they are available via the MOP, of course)
+    after add_role($role){
+        if ( $role->can('local_tests') ) {
+            $self->_add_test($role->local_tests);
+        }
+    }
+
+    method get_all_tests {
+        return $self->local_tests;
     }
 }
 

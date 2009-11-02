@@ -1,6 +1,6 @@
 use MooseX::Declare;
 
-class t::Basic {
+class t::Basic with t::RoleTest {
     use Test::Sweet;
     use Test::More;
 
@@ -10,12 +10,6 @@ class t::Basic {
         return 42;
     }
 
-    test working_all_around {
-        pass 'this also works';
-        pass 'and do does this';
-        pass 'it is working all around';
-    }
-
     test method_call {
         my $result = $_[0]->does_it_work;
         is $result, 42, 'got return value';
@@ -23,4 +17,9 @@ class t::Basic {
         my @result = $_[0]->does_it_work;
         is_deeply \@result, [1,2,3], 'wantarray is preserved correctly';
     }
+
+    test calling_a_test_from_a_role { $_[0]->from_role }
+
+    # from_role test (from t::RoleTest) runs here
+
 }

@@ -14,47 +14,40 @@ our $VERSION = '0.00';
 Moose::Exporter->setup_import_methods();
 
 sub init_meta {
-    my ($m, %options) = @_;
-    Moose->init_meta(%options);
+    my ($me, %options) = @_;
+
+    my $for = $options{for_class};
+
+
+    # work on both roles and classes
+    my $meta;
+    if ($for->can('meta')) {
+        $meta = $for->meta;
+    } else {
+        $meta = Moose::Role->init_meta(for_class => $for);
+    }
 
     setup_sugar_for($options{for_class});
 
     Moose::Util::MetaRole::apply_metaclass_roles(
-        for_class       => $options{for_class},
+        for_class       => $for,
         metaclass_roles => ['Test::Sweet::Meta::Class'],
     );
 
-    Moose::Util::MetaRole::apply_base_class_roles(
-        for_class => $options{for_class},
-        roles     => ['Test::Sweet::Runnable'],
-    );
-}
-
-sub _test {
-    my ($meta, $name, $code, %args) = @_;
-
-    my $method = Test::Sweet::Meta::Method->wrap(
-        $code,
-        %args,
-        package_name => $meta->name,
-        name         => $name,
-    );
-
-    $meta->add_method( $name => $method );
-    $meta->_add_test( $name );
+    if($meta->isa('Class::MOP::Class')){
+        # don't apply this to roles
+        Moose::Util::MetaRole::apply_base_class_roles(
+            for_class => $for,
+            roles     => ['Test::Sweet::Runnable'],
+        );
+    }
 }
 
 sub setup_sugar_for {
     my $pkg = shift;
     Test::Sweet::Keyword::Test->install_methodhandler(
-        name => 'test',
         into => $pkg,
     );
-}
-
-sub _parse {
-    my $ctx = shift;
-
 }
 
 1;
@@ -98,4 +91,5 @@ And get the valid TAP output:
    1..2
 
 No more counting tests; this module does it for you and ensures that
-you are protected against premature death.
+you are protected against premature death.  (Well, your test suite,
+anyway.)
