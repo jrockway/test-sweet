@@ -18,14 +18,14 @@ class t::Basic with t::RoleTest {
     }
 
     test method_call {
-        my $result = $_[0]->does_it_work;
+        my $result = $self->does_it_work;
         is $result, 42, 'got return value';
 
-        my @result = $_[0]->does_it_work;
+        my @result = $self->does_it_work;
         is_deeply \@result, [1,2,3], 'wantarray is preserved correctly';
     }
 
-    test calling_a_test_from_a_role { $_[0]->from_role }
+    test calling_a_test_from_a_role { $self->from_role }
 
     # from_role test (from t::RoleTest) runs here
 

@@ -25,25 +25,25 @@ sub install_methodhandler {
 }
 
 sub parser {
-  my $self = shift;
-  $self->init(@_);
+    my $self = shift;
+    $self->init(@_);
 
-  $self->skip_declarator;
-  my $name = $self->strip_name;
-  $self->strip_proto;
-  $self->strip_attrs;
-  #$self->parse_proto($proto);
+    $self->skip_declarator;
+    my $name = $self->strip_name;
+    $self->strip_proto;
+    $self->strip_attrs;
+    #$self->parse_proto($proto);
 
-  my $inject = $self->scope_injector_call();
-  $self->inject_if_block($inject);
+    my $inject = $self->scope_injector_call();
+    $self->inject_if_block($inject. " my \$self = shift; ");
 
-  my $pack = Devel::Declare::get_curstash_name;
-  Devel::Declare::shadow_sub("${pack}::test", sub (&) {
-      my $test_method = shift;
-      $pack->meta->add_test( $name, $test_method );
-  });
+    my $pack = Devel::Declare::get_curstash_name;
+    Devel::Declare::shadow_sub("${pack}::test", sub (&) {
+        my $test_method = shift;
+        $pack->meta->add_test( $name, $test_method );
+    });
 
-  return;
+    return;
 }
 
 1;
