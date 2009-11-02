@@ -2,7 +2,6 @@ use MooseX::Declare;
 
 class t::Subclass extends t::Basic {
     use Test::Sweet;
-    use Test::More;
 
     test test_from_subclass {
         pass 'tests in subclasses run';

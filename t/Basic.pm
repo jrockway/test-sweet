@@ -1,8 +1,15 @@
 use MooseX::Declare;
 
+role t::RoleTest {
+    use Test::Sweet;
+
+    test from_role {
+        pass 'tests can come from roles';
+    }
+}
+
 class t::Basic with t::RoleTest {
     use Test::Sweet;
-    use Test::More;
 
     test does_it_work {
         pass 'it works';
@@ -23,3 +30,4 @@ class t::Basic with t::RoleTest {
     # from_role test (from t::RoleTest) runs here
 
 }
+

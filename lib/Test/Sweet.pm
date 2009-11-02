@@ -27,7 +27,8 @@ sub init_meta {
         $meta = Moose::Role->init_meta(for_class => $for);
     }
 
-    setup_sugar_for($options{for_class});
+    setup_sugar_for($for);
+    load_extra_modules_into($for) unless $options{no_extra_modules};
 
     Moose::Util::MetaRole::apply_metaclass_roles(
         for_class       => $for,
@@ -48,6 +49,11 @@ sub setup_sugar_for {
     Test::Sweet::Keyword::Test->install_methodhandler(
         into => $pkg,
     );
+}
+
+sub load_extra_modules_into {
+    my $pkg = shift;
+    eval "package $pkg; use Test::More; use Test::Exception";
 }
 
 1;
