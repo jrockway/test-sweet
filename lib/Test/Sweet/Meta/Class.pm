@@ -4,6 +4,7 @@ role Test::Sweet::Meta::Class {
     use MooseX::Types::Moose qw(Str ArrayRef ClassName Object);
     use Test::Sweet::Meta::Method;
     use Moose::Meta::Class;
+    use List::MoreUtils qw(uniq);
 
     has 'local_tests' => (
         traits     => ['Array'],
@@ -58,7 +59,15 @@ role Test::Sweet::Meta::Class {
     }
 
     method get_all_tests {
-        return $self->local_tests;
+        my @ordering = reverse $self->linearized_isa;
+        my @tests = map {
+            eval {
+                my $meta = $_->meta;
+                $meta->local_tests;
+            };
+        } @ordering;
+
+        return uniq @tests;
     }
 }
 
