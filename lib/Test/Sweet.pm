@@ -6,16 +6,18 @@ use Moose::Util::MetaRole;
 use Test::Sweet::Meta::Class;
 use Test::Sweet::Meta::Method;
 
+use Devel::Declare;
+use Test::Sweet::Keyword::Test;
+
 our $VERSION = '0.00';
 
-Moose::Exporter->setup_import_methods(
-    also      => 'Moose',
-    with_meta => ['test'],
-);
+Moose::Exporter->setup_import_methods();
 
 sub init_meta {
     my ($m, %options) = @_;
     Moose->init_meta(%options);
+
+    setup_sugar_for($options{for_class});
 
     Moose::Util::MetaRole::apply_metaclass_roles(
         for_class       => $options{for_class},
@@ -28,8 +30,8 @@ sub init_meta {
     );
 }
 
-sub test(&$;@){
-    my ($meta, $code, $name, %args) = @_;
+sub _test {
+    my ($meta, $name, $code, %args) = @_;
 
     my $method = Test::Sweet::Meta::Method->wrap(
         $code,
@@ -40,6 +42,19 @@ sub test(&$;@){
 
     $meta->add_method( $name => $method );
     $meta->_add_test( $name );
+}
+
+sub setup_sugar_for {
+    my $pkg = shift;
+    Test::Sweet::Keyword::Test->install_methodhandler(
+        name => 'test',
+        into => $pkg,
+    );
+}
+
+sub _parse {
+    my $ctx = shift;
+
 }
 
 1;
