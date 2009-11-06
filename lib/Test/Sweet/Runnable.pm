@@ -18,7 +18,7 @@ role Test::Sweet::Runnable with MooseX::Runnable {
         catch {
             if( ref $_ && blessed $_ && $_->can('does') && $_->does('Test::Sweet::Exception') ){
                 if($_->isa('Test::Sweet::Exception::FailedMethod')){
-                    diag "Test '". $_->method. "' in '". $_->class. ": ". $_->error;
+                    diag "Test '". $_->method. "' in '". $_->class. "': ". $_->error;
                 }
                 else {
                     diag "Test died: ". $_->error;
