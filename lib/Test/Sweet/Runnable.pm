@@ -2,6 +2,7 @@ use MooseX::Declare;
 
 role Test::Sweet::Runnable with MooseX::Runnable {
     use Test::More;
+    use Try::Tiny;
 
     eval {
         require MooseX::Getopt;
@@ -11,8 +12,25 @@ role Test::Sweet::Runnable with MooseX::Runnable {
     method run {
         my @tests = $self->meta->get_all_tests;
         plan tests => scalar @tests; # so you get a "progress bar"
-        $self->$_ for @tests;
-        exit 0;
+        try {
+            $self->$_ for @tests;
+        }
+        catch {
+            if( ref $_ && blessed $_ && $_->can('does') && $_->does('Test::Sweet::Exception') ){
+                if($_->isa('Test::Sweet::Exception::FailedMethod')){
+                    diag "Test '". $_->method. "' in '". $_->class. ": ". $_->error;
+                }
+                else {
+                    diag "Test died: ". $_->error;
+                }
+            }
+            else {
+                diag "Test died: $_";
+            }
+
+            die $_; # rethrow for the "harness"
+        };
+        return 0;
     }
 }
 

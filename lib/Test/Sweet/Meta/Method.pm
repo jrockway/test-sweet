@@ -3,7 +3,8 @@ use MooseX::Declare;
 role Test::Sweet::Meta::Method {
     use Sub::Name;
     use Test::Builder;
-    use Context::Preserve qw(preserve_context);
+    use Try::Tiny;
+    use Test::Sweet::Exception::FailedMethod;
 
     has 'original_body' => (
         is       => 'ro',
@@ -29,16 +30,25 @@ role Test::Sweet::Meta::Method {
             $b->subtest(
                 $self->name =>
                       subname "<Test::Sweet subtest>", sub {
-                          if($context){
-                              @result = $self->$orig->(@args);
+                          try {
+                              if($context){
+                                  @result = $self->$orig->(@args);
+                              }
+                              elsif(defined $context){
+                                  $result = $self->$orig->(@args);
+                              }
+                              else {
+                                  $self->$orig->(@args);
+                              }
+                              $b->done_testing;
                           }
-                          elsif(defined $context){
-                              $result = $self->$orig->(@args);
-                          }
-                          else {
-                              $self->$orig->(@args);
-                          }
-                          $b->done_testing;
+                          catch {
+                              die Test::Sweet::Exception::FailedMethod->new(
+                                  class  => $self->package_name,
+                                  method => $self->name,
+                                  error  => $_,
+                              );
+                          };
                       },
             );
             return @result if $context;
