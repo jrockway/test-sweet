@@ -24,6 +24,7 @@ sub init_meta {
     if ($for->can('meta')) {
         $meta = $for->meta;
     } else {
+        # XXX: should Moose::Role be hard-coded here?
         $meta = Moose::Role->init_meta(for_class => $for);
     }
 
@@ -36,7 +37,7 @@ sub init_meta {
     );
 
     if($meta->isa('Class::MOP::Class')){
-        # don't apply this to roles
+        # don't apply the object metaroles to roles; only to classes
         Moose::Util::MetaRole::apply_base_class_roles(
             for_class => $for,
             roles     => ['Test::Sweet::Runnable'],

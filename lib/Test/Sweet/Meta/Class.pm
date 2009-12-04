@@ -39,16 +39,17 @@ role Test::Sweet::Meta::Class {
         );
     }
 
-    method add_test(Str $name, CodeRef $code) {
+    method add_test(Str $name, CodeRef $code, ArrayRef $test_traits?) {
         my $body = $self->test_metaclass->name->wrap(
             $code,
-            original_body => $code,
-            name          => $name,
-            package_name  => $self->name,
+            requested_test_traits => $test_traits || [],
+            original_body         => $code,
+            name                  => $name,
+            package_name          => $self->name,
         );
 
         $self->add_method( $name, $body );
-        $self->_add_test($name);
+        $self->_add_test ( $name );
     }
 
     # ensure that we get the role's tests (they are available via the MOP, of course)
