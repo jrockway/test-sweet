@@ -9,7 +9,7 @@ use Test::Sweet::Meta::Method;
 use Devel::Declare;
 use Test::Sweet::Keyword::Test;
 
-our $VERSION = '0.00_01';
+our $VERSION = '0.01';
 
 Moose::Exporter->setup_import_methods();
 
@@ -166,6 +166,91 @@ When you run C<< B->run >>, first will be called first but will print
 A", they will run in the order they appear in B, of course; second
 then first.)
 
+=head2 METATEST CLASSES AND TRAITS
+
+With this, you can inherit tests from classes or roles, but you can't
+inherit parts of tests.  For example, you may want many tests that
+will not kill the test suite if they die, but they will fail a subtest
+in that case.  With Test traits, you can implement this behavior
+reusably; as a CPAN module, as a role in your application, or as a
+role defined inside the test.
+
+The first thing you need to do is to create a meta-test trait.  This
+is a role that is applied to the metatest class, which is what
+actually runs each test.  This class has "run" method which runs the
+code you typed into the test file.  Metatest traits modify this method
+(but can have other methods and attributes).
+
+Here is the role that implements the metatest trait that will add a
+subtest that passes if the body lives, or fails if the body dies:
+
+   role Test::Sweet::Meta::Test::Trait::TestLives {
+       use Test::More;
+
+       around run(@args){
+           my $lived = 0;
+           eval {
+               $self->$orig(@args);
+               $lived = 1;
+           };
+           ok $lived, 'test lived ok';
+       }
+   }
+
+(Note that the C<Test::Sweet::Meta::Test::Trait::> namespace is the
+default place for these traits.  You can use any namespace you like,
+however; you just need to prefix the name of the trait with a C<+>
+when you use something other than this default.)
+
+Now you can use this to modify tests:
+
+    class t::Whatever {
+        use Test::Sweet;
+
+        test perhaps_it_lives (TestLives) {
+            ok 1, 'got here';
+            rand > 0.5 and die 'OH NOES';
+        }
+    }
+
+You can also use these roles to provide per-test setup and teardown
+(per-test-class setup and teardown is just BUILD and DEMOLISH).
+Here's an example test that logs a message when a test starts and when
+it finishes:
+
+    role Log with MooseX::LogDispatch {
+        method BUILD    { $self->logger->info('Test starting') }
+        method DEMOLISH { $self->logger->info('Test ending')   }
+    }
+
+Now tests that use this metatest trait:
+
+    test foo (+Log) {
+        ...
+    }
+
+will print a log message when the test starts and when it ends.  (You
+can actually do this with C<around run> too.)
+
+The test metainstance is always available inside your test as
+C<$test>:
+
+    test foo (+Log) {
+        $test->logger->info('Inside the test.');
+    }
+
+(You also get C<$self> inside tests, if you didn't notice that
+already.  C<$self> is the test class instance, C<$test> is the
+metatest object, and C<< $self->meta >> is the test metaclass.  So
+much meta...)
+
+Finally, the examples above only used one trait per test, but you can
+apply as many as you want:
+
+    test foo (+Foo, Bar, Baz, +Quux, OH::Hai) {
+        ...
+    }
+
 =head1 REPOSITORY
 
 L<http://github.com/jrockway/test-sweet>
@@ -184,6 +269,11 @@ C<run-test-suite t::Suite --no-slow-tests> or something.)
 
 More testing.  There are undoubtedly corner cases that are
 undiscovered and unhandled.
+
+Document the full meta-protocol.  For now, look at the C<t::Traits>
+test.
+
+Syntax sugar for creating traits and attributes on those traits.
 
 =head1 SEE ALSO
 
