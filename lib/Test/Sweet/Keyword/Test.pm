@@ -2,7 +2,6 @@ package Test::Sweet::Keyword::Test;
 use strict;
 use warnings;
 
-use Devel::BeginLift;
 use Devel::Declare ();
 use Sub::Name;
 
