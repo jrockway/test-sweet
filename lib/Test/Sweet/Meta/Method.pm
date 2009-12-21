@@ -64,6 +64,7 @@ role Test::Sweet::Meta::Method {
     );
 
     method _build_test_metaclass {
+        # XXX: don't hard-code superclass, make it a role
         return Moose::Meta::Class->create_anon_class(
             superclasses => [ 'Test::Sweet::Meta::Test' ],
             cache        => 1,
