@@ -1,3 +1,6 @@
+0.02       Wed Sep 15 05:42:18 CDT 2010
+           - stop using deprecated moose APIs
+
 0.01       Mon Dec 21 02:20:51 CST 2009
            - add the meta-test protocol
 

@@ -9,15 +9,13 @@ use Test::Sweet::Meta::Method;
 use Devel::Declare;
 use Test::Sweet::Keyword::Test;
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 Moose::Exporter->setup_import_methods();
 
 sub init_meta {
     my ($me, %options) = @_;
-
     my $for = $options{for_class};
-
 
     # work on both roles and classes
     my $meta;
@@ -31,16 +29,17 @@ sub init_meta {
     setup_sugar_for($for);
     load_extra_modules_into($for) unless $options{no_extra_modules};
 
-    Moose::Util::MetaRole::apply_metaclass_roles(
-        for_class       => $for,
-        metaclass_roles => ['Test::Sweet::Meta::Class'],
+    Moose::Util::MetaRole::apply_metaroles(
+        for             => $for,
+        class_metaroles => { class => ['Test::Sweet::Meta::Class'] },
+        role_metaroles  => { role  => ['Test::Sweet::Meta::Class'] },
     );
 
     if($meta->isa('Class::MOP::Class')){
         # don't apply the object metaroles to roles; only to classes
         Moose::Util::MetaRole::apply_base_class_roles(
-            for_class => $for,
-            roles     => ['Test::Sweet::Runnable'],
+            for   => $for,
+            roles => ['Test::Sweet::Runnable'],
         );
     }
 }

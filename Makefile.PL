@@ -8,7 +8,7 @@ requires 'Test::Exception';
 requires 'Test::Harness'   => '3.17';
 requires 'Devel::Declare'  => '0.005011';
 requires 'MooseX::Declare' => '0.31';
-requires 'Moose'           => '0.92';
+requires 'Moose'           => '1.12';
 requires 'List::MoreUtils';
 requires 'MooseX::Runnable';
 
