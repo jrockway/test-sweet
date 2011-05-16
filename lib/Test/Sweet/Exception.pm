@@ -1,15 +1,19 @@
-use MooseX::Declare;
+package Test::Sweet::Exception;
+# ABSTRACT:
+use Moose::Role;
+use namespace::autoclean;
 
-role Test::Sweet::Exception {
-    has 'error' => (
-        is       => 'ro',
-        isa      => 'Any',
-        required => 1,
-    );
+has 'error' => (
+    is       => 'ro',
+    isa      => 'Any',
+    required => 1,
+);
 
-    has [qw/class method/] => (
-        is       => 'ro',
-        isa      => 'Str',
-        required => 1,
-    );
-}
+has [qw/class method/] => (
+    is       => 'ro',
+    isa      => 'Str',
+    required => 1,
+);
+
+1;
+

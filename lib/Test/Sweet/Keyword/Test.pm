@@ -1,4 +1,5 @@
 package Test::Sweet::Keyword::Test;
+# ABSTRACT: provides the C<test> keyword
 use strict;
 use warnings;
 
@@ -54,8 +55,3 @@ sub parser {
 1;
 
 __END__
-
-=head1 NAME
-
-Test::Sweet::Keyword::Test - provides the C<test> keyword
-

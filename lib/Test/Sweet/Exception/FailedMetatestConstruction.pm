@@ -1,4 +1,10 @@
-use MooseX::Declare;
+package Test::Sweet::Exception::FailedMetatestConstruction;
+# ABSTRACT:
+use Moose;
+use namespace::autoclean;
 
-class Test::Sweet::Exception::FailedMetatestConstruction with Test::Sweet::Exception {
-}
+with 'Test::Sweet::Exception';
+
+1;
+
+__END__
