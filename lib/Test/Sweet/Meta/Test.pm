@@ -1,5 +1,5 @@
 package Test::Sweet::Meta::Test;
-# ABSTRACT:
+# ABSTRACT: object representing a test case
 use Moose;
 use MooseX::Types::Moose qw(CodeRef);
 use Test::Sweet::Types qw(SuiteClass);

@@ -1,5 +1,5 @@
 package Test::Sweet::Exception::FailedMetatestConstruction;
-# ABSTRACT:
+# ABSTRACT: exception representing the failure to create a metatest object
 use Moose;
 use namespace::autoclean;
 

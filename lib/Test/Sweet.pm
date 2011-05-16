@@ -1,4 +1,7 @@
 package Test::Sweet;
+# ABSTRACT: Moose-based Test::Class replacement
+our $VERSION;
+
 use Moose ();
 use Moose::Exporter;
 use Moose::Util::MetaRole;
@@ -8,8 +11,6 @@ use Test::Sweet::Meta::Method;
 
 use Devel::Declare;
 use Test::Sweet::Keyword::Test;
-
-our $VERSION = '0.02';
 
 Moose::Exporter->setup_import_methods();
 
@@ -59,14 +60,11 @@ sub load_extra_modules_into {
 1;
 __END__
 
-=head1 NAME
-
-Test::Sweet - Moose-based Test::Class replacement
-
 =head1 SYNOPSIS
 
 Write test classes:
 
+   use MooseX::Declare;
    class t::RecordBasic with t::lib::FakeDatabase {
        use Test::Sweet;
 

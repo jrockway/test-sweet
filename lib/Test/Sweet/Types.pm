@@ -1,4 +1,5 @@
 package Test::Sweet::Types;
+# ABSTRACT: types used internally
 use strict;
 use warnings;
 

@@ -1,5 +1,5 @@
 package Test::Sweet::Meta::Method;
-# ABSTRACT:
+# ABSTRACT: metamethod for tests
 use Moose::Role;
 
 use MooseX::Types::Moose qw(CodeRef ArrayRef Str);

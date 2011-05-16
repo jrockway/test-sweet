@@ -1,5 +1,5 @@
 package Test::Sweet::Exception;
-# ABSTRACT:
+# ABSTRACT: role representing exceptions thrown by tests
 use Moose::Role;
 use namespace::autoclean;
 

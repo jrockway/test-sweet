@@ -1,5 +1,5 @@
 package Test::Sweet::Exception::FailedMethod;
-# ABSTRACT:
+# ABSTRACT: exception representing an exception thrown during testing
 use Moose;
 use namespace::autoclean;
 
