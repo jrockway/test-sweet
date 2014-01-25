@@ -3,6 +3,7 @@ package Test::Sweet::Meta::Method;
 use Moose::Role;
 
 use MooseX::Types::Moose qw(CodeRef ArrayRef Str);
+use Class::Load;
 use Sub::Name;
 use Test::Builder;
 use Try::Tiny;
@@ -39,13 +40,13 @@ sub _resolve_trait {
 
     if($trait_name =~ /^[+](.+)$/){
         $trait_name = $1;
-        Class::MOP::load_class($trait_name);
+        Class::Load::load_class($trait_name);
         return $trait_name;
     }
-    elsif ( eval { Class::MOP::load_class($anon_test_trait); 1 } ) {
+    elsif ( eval { Class::Load::load_class($anon_test_trait); 1 } ) {
         return $anon_test_trait;
     }
-    elsif ( eval { Class::MOP::load_class($real_test_trait); 1 } ) {
+    elsif ( eval { Class::Load::load_class($real_test_trait); 1 } ) {
         return $real_test_trait;
     }
     else {
@@ -67,7 +68,7 @@ sub has_actual_test_traits {
 
 has 'test_metaclass' => (
     is         => 'ro',
-    isa        => 'Class::MOP::Class',
+    isa        => 'Class::Load::Class',
     lazy_build => 1,
 );
 
